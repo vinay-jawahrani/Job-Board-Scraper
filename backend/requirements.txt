@@ -9,8 +9,10 @@ alembic==1.12.1
 asyncpg==0.29.0
 psycopg2-binary==2.9.9
 
-# Pydantic V1 (NO Rust compilation needed)
-pydantic==1.10.13
+# Pydantic V2 with settings
+pydantic==2.5.0
+pydantic-core==2.14.5
+pydantic-settings==2.1.0
 
 # Authentication
 python-jose[cryptography]==3.3.0

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from datetime import datetime
 from typing import Optional, List
 from decimal import Decimal
@@ -9,8 +9,9 @@ class UserCreate(BaseModel):
     password: str = Field(..., min_length=8)
     full_name: str = Field(..., min_length=2, max_length=100)
     
-    @validator('password')
-    def validate_password(cls, v):
+    @field_validator('password')
+    @classmethod
+    def validate_password(cls, v: str) -> str:
         if not any(c.isdigit() for c in v):
             raise ValueError('Password must contain at least one digit')
         if not any(c.isupper() for c in v):
@@ -49,17 +50,22 @@ class JobBase(BaseModel):
     job_type: Optional[str] = None
     source_url: Optional[str] = None
     
-    @validator('salary_min', 'salary_max')
-    def validate_salary(cls, v):
+    @field_validator('salary_min', 'salary_max')
+    @classmethod
+    def validate_salary(cls, v: Optional[Decimal]) -> Optional[Decimal]:
         if v is not None and v < 0:
             raise ValueError('Salary cannot be negative')
         return v
     
-    @validator('salary_max')
-    def validate_salary_range(cls, v, values):
-        if v is not None and 'salary_min' in values and values['salary_min'] is not None:
-            if v < values['salary_min']:
-                raise ValueError('Salary max must be greater than salary min')
+    @field_validator('salary_max')
+    @classmethod
+    def validate_salary_range(cls, v: Optional[Decimal], info) -> Optional[Decimal]:
+        if v is not None:
+            # Get salary_min from the values
+            values = info.data
+            if 'salary_min' in values and values['salary_min'] is not None:
+                if v < values['salary_min']:
+                    raise ValueError('Salary max must be greater than salary min')
         return v
 
 class JobCreate(JobBase):
