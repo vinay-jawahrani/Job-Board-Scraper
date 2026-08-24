@@ -107,10 +107,8 @@ class JobFilters(BaseModel):
     keyword: Optional[str] = None
     location: Optional[str] = None
     job_type: Optional[str] = None
-    salary_min: Optional[Decimal] = None
-    salary_max: Optional[Decimal] = None
     source: Optional[str] = None
-    page: int = Field(1, ge=1)
-    page_size: int = Field(20, ge=1, le=100)
-    sort_by: Optional[str] = Field(None, pattern="^(created_at|salary_min|salary_max|posted_date)$")
-    sort_order: Optional[str] = Field("desc", pattern="^(asc|desc)$")
+    page: int = 1
+    page_size: int = 20
+    sort_by: Optional[str] = None
+    sort_order: str = "desc"
