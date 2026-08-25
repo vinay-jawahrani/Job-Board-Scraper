@@ -33,12 +33,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [])
 
   const login = async (credentials: LoginCredentials) => {
-    const response = await auth.login(credentials)
-    const { access_token, user } = response.data
-    localStorage.setItem('access_token', access_token)
-    localStorage.setItem('user', JSON.stringify(user))
-    setUser(user)
+  try {
+    const response = await auth.login(credentials);
+    const { access_token, user } = response.data;
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('user', JSON.stringify(user));
+    setUser(user);
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error; // re-throw so component can handle it
   }
+};
 
   const register = async (data: RegisterData) => {
     const response = await auth.register(data)

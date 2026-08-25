@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from app.config import settings
 from app.database import engine, Base
 from app.routers import auth, jobs, scraper
@@ -52,3 +53,10 @@ async def health_check():
 @app.get("/api/test-cors")
 async def test_cors():
     return {"message": "CORS is working!"}
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()},
+    )

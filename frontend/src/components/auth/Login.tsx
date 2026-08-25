@@ -19,10 +19,19 @@ export const Login = () => {
       await login({ email, password })
       toast.success('Login successful!')
       navigate('/')
-    } catch (error: any) {
-      const message = error.response?.data?.detail || 'Login failed. Please try again.'
-      toast.error(message)
-    } finally {
+    } 
+    catch (error: any) {
+  let message = 'Login failed. Please try again.';
+  if (error.response?.data?.detail) {
+    if (Array.isArray(error.response.data.detail)) {
+      message = error.response.data.detail.map((e: any) => e.msg).join(', ');
+    } else {
+      message = error.response.data.detail;
+    }
+  }
+  toast.error(message);
+}
+    finally {
       setLoading(false)
     }
   }

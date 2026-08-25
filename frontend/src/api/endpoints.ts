@@ -13,8 +13,17 @@ export const auth = {
   register: (data: RegisterData) =>
     apiClient.post<AuthResponse>('/api/auth/register', data),
   
-  login: (data: LoginCredentials) =>
-    apiClient.post<AuthResponse>('/api/auth/login', data),
+  login: (data: LoginCredentials) => {
+  const formData = new URLSearchParams();
+  formData.append('username', data.email);   // FastAPI expects 'username'
+  formData.append('password', data.password);
+  
+  return apiClient.post<AuthResponse>('/api/auth/login', formData, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
+},
   
   getMe: () =>
     apiClient.get<User>('/api/auth/me'),
