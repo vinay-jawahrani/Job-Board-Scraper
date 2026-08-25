@@ -20,7 +20,6 @@ AsyncSessionLocal = async_sessionmaker(
 Base = declarative_base()
 
 async def get_db():
-    """Dependency that provides a database session."""
     async with AsyncSessionLocal() as session:
         try:
             yield session
