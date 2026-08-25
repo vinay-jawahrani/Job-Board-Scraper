@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     
     # CORS
-    CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
+    CORS_ORIGINS: str = "http://localhost:3000"
     
     @property
     def cors_origins_list(self) -> List[str]:
